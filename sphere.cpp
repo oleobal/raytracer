@@ -38,13 +38,10 @@ Hit Sphere::intersect(const Ray &ray)
     * intersection point from the ray origin as t and the normal ad N (see example).
     ****************************************************/
 
-    // place holder for actual intersection calculation
-
-    Vector OC = (position - ray.O).normalized();
-    if (OC.dot(ray.D) < 0.999) {
+    Vector OC = position - ray.O;
+    double t = OC.length();
+    if (sin(acos(OC.normalized().dot(ray.D))) * t > r)
         return Hit::NO_HIT();
-    }
-    double t = 1000;
 
     /****************************************************
     * RT1.2: NORMAL CALCULATION
