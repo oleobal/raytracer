@@ -39,8 +39,9 @@ Hit Sphere::intersect(const Ray &ray)
     ****************************************************/
 
     Vector OC = position - ray.O;
-    double t = OC.length();
-    if (sin(acos(OC.normalized().dot(ray.D))) * t > r)
+    double dotProduct = ray.D.dot(OC);
+    double delta = pow(dotProduct, 2) - OC.length_2() + pow(r, 2);
+    if (delta < 0)
         return Hit::NO_HIT();
 
     /****************************************************
@@ -52,7 +53,9 @@ Hit Sphere::intersect(const Ray &ray)
     * Insert calculation of the sphere's normal at the intersection point.
     ****************************************************/
 
-    Vector N /* = ... */;
+    double t = -dotProduct - sqrt(delta);
+    Point intersection = ray.O + ray.D * t;
+    Vector N = (intersection - position).normalized();
 
     return Hit(t,N);
 }
