@@ -10,6 +10,11 @@
 //    Jasper van de Gronde
 //    adjustment of Hit class by Olivier Wavrin
 //
+//  Students:
+//    Vincent Fabioux
+//    Olivier Léobal
+//
+//
 //  This framework is inspired by and uses code of the raytracer framework of 
 //  Bert Freudenberg that can be found at
 //  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
