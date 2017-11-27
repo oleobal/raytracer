@@ -43,24 +43,7 @@ Color Scene::trace(const Ray &ray)
     Vector N = min_hit.N;                          //the normal at hit point
     Vector V = -ray.D;                             //the view vector
 
-
-    /****************************************************
-    * This is where you should insert the color
-    * calculation (Phong model).
-    *
-    * Given: material, hit, N, V, lights[]
-    * Sought: color
-    *
-    * Hints: (see triple.h)
-    *        Triple.dot(Vector) dot product
-    *        Vector+Vector      vector sum
-    *        Vector-Vector      vector difference
-    *        Point-Point        yields vector
-    *        Vector.normalize() normalizes vector, returns length
-    *        double*Color        scales each color component (r,g,b)
-    *        Color*Color        dito
-    *        pow(a,b)           a to the power of b
-    ****************************************************/
+    
 
     // Computing of the color using the Phong reflection model:
     // https://en.wikipedia.org/wiki/Phong_reflection_model

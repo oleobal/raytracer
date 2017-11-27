@@ -30,10 +30,19 @@
 
 class Scene
 {
+public:
+    enum RenderMode {
+        phong, zbuffer, normal
+    };
+
 private:
     std::vector<Object*> objects;
     std::vector<Light*> lights;
     Triple eye;
+    RenderMode renderMode;
+    double nearClippingDistance;
+    double farClippingDistance;
+
 public:
     Color trace(const Ray &ray);
     void render(Image &img);
@@ -42,6 +51,10 @@ public:
     void setEye(Triple e);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
+
+    void setRenderMode(RenderMode value) { renderMode = value; }
+    void setNearClippingDistance(double value) { nearClippingDistance = value; }
+    void setFarClippingDistance(double value) { farClippingDistance = value; }
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */
