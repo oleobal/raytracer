@@ -1,5 +1,7 @@
-*
-!*.h
-!*.hpp
-!*.cpp
-!*.yaml
+**/*
+!**/*.h
+!**/*.hpp
+!**/*.cpp
+!**/*.yaml
+!**/*.bat
+!raytracer-binary/raytracer.exe
