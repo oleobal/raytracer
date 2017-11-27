@@ -43,41 +43,56 @@ Color Scene::trace(const Ray &ray)
     Vector N = min_hit.N;                          //the normal at hit point
     Vector V = -ray.D;                             //the view vector
 
-    
+    renderMode = normal;
+    switch(renderMode)
+    {
+        case zbuffer: // Display zbuffer values as a grayscale
+        {
+            double color = 1.0 - (min_hit.t - nearClippingDistance)
+                / (farClippingDistance - nearClippingDistance);
+            return Color(color, color, color);
+        }
+        case normal: // Display normals components as RGB colors
+        {
+            return Color((N + Vector(1.0, 1.0, 1.0) / 2.0));
+        }
+        default: // Phong rendering
+        {
+            // Computing of the color using the Phong reflection model:
+            // https://en.wikipedia.org/wiki/Phong_reflection_model
 
-    // Computing of the color using the Phong reflection model:
-    // https://en.wikipedia.org/wiki/Phong_reflection_model
+            // Computing per-light factors of Phong model components
+            // (diffuse and specular).
+            Color diffuse, specular;
+            for(unsigned int i = 0; i < lights.size(); i++)
+            {   
+                // Light direction vector (from the light to the hit point)
+                Vector L = (lights[i]->position - hit).normalized();
 
-    // Computing per-light factors of Phong model components
-    // (diffuse and specular).
-    Color diffuse, specular;
-    for(unsigned int i = 0; i < lights.size(); i++)
-    {   
-        // Light direction vector (from the light to the hit point)
-        Vector L = (lights[i]->position - hit).normalized();
+                // Diffuse per-light component: L.N
+                // Maximized when the light direction (L) is aligned with the
+                // normal vector of the surface (N).
+                double angle = L.dot(N);
+                if(angle > 0)
+                    diffuse += angle * lights[i]->color;
 
-        // Diffuse per-light component: L.N
-        // Maximized when the light direction (L) is aligned with the
-        // normal vector of the surface (N).
-        double angle = L.dot(N);
-        if(angle > 0)
-            diffuse += angle * lights[i]->color;
+                // Specular per-light component: R.V^n
+                // Maximized when the viewer direction (V) is aligned with the
+                // light reflected on the surface (R).
+                // R is computed using the formula R = 2 * L.N * N - L.
+                // Reusing old angle variable calculated above as L.N.
+                angle = (2 * angle * N - L).normalized().dot(V);
+                if(angle > 0)
+                    specular += pow(angle, material->n) * lights[i]->color;
+            }
 
-        // Specular per-light component: R.V^n
-        // Maximized when the viewer direction (V) is aligned with the
-        // light reflected on the surface (R).
-        // R is computed using the formula R = 2 * L.N * N - L.
-        // Reusing old angle variable calculated above as L.N.
-        angle = (2 * angle * N - L).normalized().dot(V);
-        if(angle > 0)
-            specular += pow(angle, material->n) * lights[i]->color;
+            // Returning all components together with their coefficients applied.
+            // The ambient component is added, and both the ambient and diffuse
+            // components are affected by the material color.
+            return (material->ka + diffuse * material->kd) * material->color
+                + specular * material->ks;
+        }
     }
-
-    // Returning all components together with their coefficients applied.
-    // The ambient component is added, and both the ambient and diffuse
-    // components are affected by the material color.
-    return (material->ka + diffuse * material->kd) * material->color
-        + specular * material->ks;
 }
 
 void Scene::render(Image &img)
