@@ -113,6 +113,27 @@ bool Raytracer::readScene(const std::string& inputFilename)
             YAML::Node doc;
             parser.GetNextDocument(doc);
 
+			std::string renderMode = "phong" ;
+			try {doc["RenderMode"] >> renderMode;}
+			catch (...) {}
+			if (renderMode == "phong")
+				scene->setRenderMode(Scene::phong);
+			if (renderMode == "normal")
+				scene->setRenderMode(Scene::normal);
+			if (renderMode == "zbuffer")
+				scene->setRenderMode(Scene::zbuffer);
+			
+			try
+			{
+				double near, far ; //wherever you are
+				doc["nearClippingPlane"] >> near;
+				doc["farClippingPlane"] >> far;
+				scene->setNearClippingDistance(near);
+				scene->setFarClippingDistance(far);
+			}
+			catch(...){}
+			
+
             // Read scene configuration options
             scene->setEye(parseTriple(doc["Eye"]));
 
