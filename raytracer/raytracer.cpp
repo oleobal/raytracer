@@ -20,6 +20,7 @@
 #include "raytracer.h"
 #include "object.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "material.h"
 #include "light.h"
 #include "image.h"
@@ -66,7 +67,8 @@ Object* Raytracer::parseObject(const YAML::Node& node)
     std::string objectType;
     node["type"] >> objectType;
 
-    if (objectType == "sphere") {
+    if (objectType == "sphere")
+    {
         Point pos;
         node["position"] >> pos;
         double r;
@@ -74,8 +76,18 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         Sphere *sphere = new Sphere(pos,r);		
         returnObject = sphere;
     }
+    else if(objectType == "triangle")
+    {
+        Point p1, p2, p3;
+        node["point1"] >> p1;
+        node["point2"] >> p2;
+        node["point3"] >> p3;
+        Triangle* triangle = new Triangle(p1, p2, p3);
+        returnObject = triangle;
+    }
 
-    if (returnObject) {
+    if (returnObject)
+    {
         // read the material and attach to object
         returnObject->material = parseMaterial(node["material"]);
     }
