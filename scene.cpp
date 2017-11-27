@@ -43,18 +43,23 @@ Color Scene::trace(const Ray &ray)
     Vector N = min_hit.N;                          //the normal at hit point
     Vector V = -ray.D;                             //the view vector
 
-    renderMode = normal;
     switch(renderMode)
     {
         case zbuffer: // Display zbuffer values as a grayscale
         {
-            double color = 1.0 - (min_hit.t - nearClippingDistance)
+            double color = (min_hit.t - nearClippingDistance)
                 / (farClippingDistance - nearClippingDistance);
+            if(color > 1)
+                color = 0;
+            else if(color < 0)
+                color = 1;
+            else
+                color = 1 - color;
             return Color(color, color, color);
         }
         case normal: // Display normals components as RGB colors
         {
-            return Color((N + Vector(1.0, 1.0, 1.0) / 2.0));
+            return Color((N + Vector(1.0, 1.0, 1.0)) / 2.0);
         }
         default: // Phong rendering
         {

@@ -13,10 +13,10 @@
 #  it should be clear that the #-character can be used to insert comments.
 
 RenderMode: "zbuffer"
-nearClippingPlane: 1
-farClippingPlane: 300
+nearClippingPlane: 500
+farClippingPlane: 1000
 
-Eye: [200,200,1000]  
+Eye: [200,200,1000]
 
 Lights:
 - position: [-200,600,1500]
