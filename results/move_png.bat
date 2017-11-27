@@ -1,0 +1,1 @@
+move ../raytracer/*.png .

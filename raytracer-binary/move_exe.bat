@@ -1,0 +1,1 @@
+move ../raytracer/ray.exe raytracer.exe
