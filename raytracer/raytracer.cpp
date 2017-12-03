@@ -78,11 +78,11 @@ Object* Raytracer::parseObject(const YAML::Node& node)
     }
     else if(objectType == "triangle")
     {
-        Point p1, p2, p3;
-        node["point1"] >> p1;
-        node["point2"] >> p2;
-        node["point3"] >> p3;
-        Triangle* triangle = new Triangle(p1, p2, p3);
+        Point p0, p1, p2;
+        node["point1"] >> p0;
+        node["point2"] >> p1;
+        node["point3"] >> p2;
+        Triangle* triangle = new Triangle(p0, p1, p2);
         returnObject = triangle;
     }
 

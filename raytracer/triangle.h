@@ -27,11 +27,14 @@
 class Triangle : public Object
 {
 public:
-    Triangle(Point p1, Point p2, Point p3) : p1(p1), p2(p2), p3(p3) { }
+    // Culled triangle : only the front-face is visible (for better performances
+    // with meshes).
+    Triangle(Point p0, Point p1, Point p2);
 
     virtual Hit intersect(const Ray &ray);
 
-    const Point p1, p2, p3;
+    const Point p0, p1, p2;
+    const Vector N;
 };
 
-#endif /* end of include guard: SPHERE_H_115209AE */
+#endif /* end of include guard: TRIANGLE_H_FABIOUX_LEOBALD */

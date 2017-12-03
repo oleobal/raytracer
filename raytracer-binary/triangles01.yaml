@@ -1,0 +1,58 @@
+---
+#  Authors:
+#    Vincent Fabioux
+#    Olivier Léobal
+
+RenderMode: "phong"
+
+Eye: [200, 200, 500]
+
+Lights:
+- position: [100,200,1000]
+  color: [1.0,1.0,0.5]
+- position: [340,200,1000]
+  color: [0.5,1.0,1.0]
+- position: [220,0,1000]
+  color: [1.0,0.5,1.0]
+
+Objects:
+- type: triangle
+  point1: [80, 80, 0]
+  point2: [280, 80, 0]
+  point3: [80, 280, 0]
+  material: # red plastic
+    color: [1.0,1.0,1.0]
+    ka: 0
+    kd: 0
+    ks: 0.5
+    n: 16
+- type: triangle
+  point1: [120, 320, 0]
+  point2: [320, 120, 0]
+  point3: [320, 320, 0]
+  material: # red plastic
+    color: [1.0,1.0,1.0]
+    ka: 0
+    kd: 0
+    ks: 0.5
+    n: 16
+- type: triangle
+  point1: [110, 110, -50]
+  point2: [310, 110, -50]
+  point3: [110, 310, -50]
+  material: # grey metal
+    color: [1.0,1.0,1.0]
+    ka: 0.2
+    kd: 0.05
+    ks: 0.9
+    n: 1024
+- type: triangle
+  point1: [90, 290, -50]
+  point2: [290, 90, -50]
+  point3: [290, 290, -50]
+  material: # grey metal
+    color: [1.0,1.0,1.0]
+    ka: 0.2
+    kd: 0.05
+    ks: 0.9
+    n: 1024

@@ -1,1 +1,1 @@
-move ../raytracer/*.png .
+move /Y ../raytracer-binary/*.png .

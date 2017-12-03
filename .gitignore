@@ -5,4 +5,5 @@
 !*/*.bat
 !raytracer-binary/raytracer.exe
 !raytracer-binary/*.yaml
+!raytracer-binary/old/*.yaml
 !results/*.png

@@ -4,4 +4,6 @@ Students:
 
 Week: 2
 
-Nothing notable in this version
+Implemented geometries
+	Triangle (with face culling, front-face being CCW)
+	Cylinder
