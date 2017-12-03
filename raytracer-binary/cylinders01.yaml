@@ -1,0 +1,50 @@
+---
+#  Authors:
+#    Vincent Fabioux
+#    Olivier Léobal
+
+RenderMode: "phong"
+
+Eye: [200, 200, 500]
+
+Lights:
+- position: [100,200,1000]
+  color: [1.0,1.0,0.5]
+- position: [340,200,1000]
+  color: [0.5,1.0,1.0]
+- position: [220,0,1000]
+  color: [1.0,0.5,1.0]
+
+Objects:
+- type: cylinder
+  point1: [100,300,100]
+  point2: [140,330,110]
+  radius: 50
+  material:
+    color: [1.0,0.0,1.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+
+- type: cylinder
+  point1: [230,100,50]
+  point2: [230,325,100]
+  radius: 20
+  material:
+    color: [0.7,0.7,1.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+
+- type: cylinder
+  point1: [130,100,100]
+  point2: [130,105,50]
+  radius: 20
+  material:
+    color: [0.3,1.0,0.3]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
