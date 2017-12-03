@@ -22,8 +22,6 @@
 #include "cylinder.h"
 #include <math.h>
 
-#define TRIANGLE_CCP
-
 
 Hit Cylinder::intersect(const Ray &ray)
 {
