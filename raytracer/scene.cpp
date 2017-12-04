@@ -71,24 +71,44 @@ Color Scene::trace(const Ray &ray)
             Color diffuse, specular;
             for(unsigned int i = 0; i < lights.size(); i++)
             {   
-                // Light direction vector (from the light to the hit point)
+                // Light direction vector (from the hit point to the light)
                 Vector L = (lights[i]->position - hit).normalized();
 
-                // Diffuse per-light component: L.N
-                // Maximized when the light direction (L) is aligned with the
-                // normal vector of the surface (N).
-                double angle = L.dot(N);
-                if(angle > 0)
-                    diffuse += angle * lights[i]->color;
+                // Check if another object does not cover the light ray
+                bool computeLights = true;
+                for (unsigned int i = 0; i < objects.size(); i++)
+                {
+                    if(objects[i] != obj)
+                    {
+                        Hit cover(objects[i]->intersect(Ray(hit, L)));
+                        if (cover.t != std::numeric_limits<double>::infinity()
+                            && cover.t < min_hit.t
+                            && cover.t >= 0)
+                        {
+                            computeLights = false;
+                            break;
+                        }
+                    }
+                }
 
-                // Specular per-light component: R.V^n
-                // Maximized when the viewer direction (V) is aligned with the
-                // light reflected on the surface (R).
-                // R is computed using the formula R = 2 * L.N * N - L.
-                // Reusing old angle variable calculated above as L.N.
-                angle = (2 * angle * N - L).normalized().dot(V);
-                if(angle > 0)
-                    specular += pow(angle, material->n) * lights[i]->color;
+                if(computeLights)
+                {
+                    // Diffuse per-light component: L.N
+                    // Maximized when the light direction (L) is aligned with
+                    // the normal vector of the surface (N).
+                    double angle = L.dot(N);
+                    if(angle > 0)
+                        diffuse += angle * lights[i]->color;
+
+                    // Specular per-light component: R.V^n
+                    // Maximized when the viewer direction (V) is aligned with
+                    // the light reflected on the surface (R).
+                    // R is computed using the formula R = 2 * L.N * N - L.
+                    // Reusing old angle variable calculated above as L.N.
+                    angle = (2 * angle * N - L).normalized().dot(V);
+                    if(angle > 0)
+                        specular += pow(angle, material->n) * lights[i]->color;
+                }
             }
 
             // Returning all components together with their coefficients applied.
