@@ -86,7 +86,6 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         Triangle* triangle = new Triangle(p0, p1, p2);
         returnObject = triangle;
     }
-    
     else if(objectType == "cylinder")
     {
         Point p0, p1;
@@ -156,6 +155,11 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 scene->setFarClippingDistance(far);
             }
 			
+            // Read whether shadows should be used or not
+            bool enableShadows;
+            if((enableShadows = doc["Shadows"]))
+                scene->setEnableShadows(enableShadows);
+
 
             // Read scene configuration options
             scene->setEye(parseTriple(doc["Eye"]));

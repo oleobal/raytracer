@@ -42,6 +42,7 @@ private:
     RenderMode renderMode;
     double nearClippingDistance;
     double farClippingDistance;
+    bool enableShadows;
 
 public:
     Color trace(const Ray &ray);
@@ -55,6 +56,7 @@ public:
     void setRenderMode(RenderMode value) { renderMode = value; }
     void setNearClippingDistance(double value) { nearClippingDistance = value; }
     void setFarClippingDistance(double value) { farClippingDistance = value; }
+    void setEnableShadows(bool value) { enableShadows = value; }
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */
