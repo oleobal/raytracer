@@ -68,7 +68,7 @@ Color Scene::trace(const Ray &ray)
 
             // Computing per-light factors of Phong model components
             // (diffuse and specular).
-            Color diffuse, specular;
+            Color diffuse, specular, reflection;
             for(unsigned int i = 0; i < lights.size(); i++)
             {   
                 // Light direction vector (from the hit point to the light)
@@ -110,12 +110,25 @@ Color Scene::trace(const Ray &ray)
                         specular += pow(angle, material->n) * lights[i]->color;
                 }
             }
+			// reflections
+			try
+			{
+				Vector n = N.normalized();
+				Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
+				
+				Ray reflRay = Ray(hit, refl, ray.reflection+1);
+				reflection = trace(reflRay);
+			}
+			catch (string e)
+			{
+				reflection = Color(0,0,0);
+			}
 
             // Returning all components together with their coefficients applied.
             // The ambient component is added, and both the ambient and diffuse
             // components are affected by the material color.
             return (material->ka + diffuse * material->kd) * material->color
-                + specular * material->ks;
+                + specular * material->ks + reflection * material->ks;
         }
     }
 }
