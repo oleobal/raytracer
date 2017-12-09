@@ -71,6 +71,8 @@ Hit Sphere::intersect(const Ray &ray)
     // the closest to the ray's origin since we want to draw only that point:
     // we always take the smallest t (hence the -sqrt()).
     double t = -dotProduct - sqrt(delta);
+    if(t < 0)
+        return Hit::NO_HIT();
 
     // The normal vector at the intersection point on a sphere is simply
     // the normalized vector between the center of the sphere and the

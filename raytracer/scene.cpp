@@ -22,16 +22,20 @@
 #include "scene.h"
 #include "material.h"
 
+
 Color Scene::trace(const Ray &ray)
 {
     // Find hit object and distance
     Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
     Object *obj = NULL;
     for (unsigned int i = 0; i < objects.size(); ++i) {
-        Hit hit(objects[i]->intersect(ray));
-        if (hit.t<min_hit.t) {
-            min_hit = hit;
-            obj = objects[i];
+        if(objects[i] != ray.origin)
+        {
+            Hit hit(objects[i]->intersect(ray));
+            if (hit.t<min_hit.t) {
+                min_hit = hit;
+                obj = objects[i];
+            }
         }
     }
 
@@ -82,8 +86,7 @@ Color Scene::trace(const Ray &ray)
                     {
                         Hit cover(objects[i]->intersect(Ray(hit, L)));
                         if (cover.t != std::numeric_limits<double>::infinity()
-                            && cover.t < min_hit.t
-                            && cover.t >= 0)
+                            && cover.t < min_hit.t)
                         {
                             computeLights = false;
                             break;
@@ -110,26 +113,24 @@ Color Scene::trace(const Ray &ray)
                         specular += pow(angle, material->n) * lights[i]->color;
                 }
             }
-			// reflections
-			try
-			{
-				Vector n = N.normalized();
-				Vector d = -ray.D;
-				Vector refl = d -  2 * (d.dot(n)) * n;
-				
-				Ray reflRay = Ray(hit, refl, ray.reflection+1);
-				reflection = trace(reflRay);
-			}
-			catch (string e)
-			{
-				reflection = Color(0,0,0);
-			}
+
+            // Reflections
+            try
+            {
+                Vector refl = 2 * ray.D.dot(N) * N - ray.D;
+                Ray reflRay = Ray(hit, refl, ray.reflection+1, obj);
+                reflection = trace(reflRay);
+            }
+            catch(string e)
+            {
+                reflection = Color(0.0, 0.0, 0.0);
+            }
 
             // Returning all components together with their coefficients applied.
             // The ambient component is added, and both the ambient and diffuse
             // components are affected by the material color.
             return (material->ka + diffuse * material->kd) * material->color
-                + specular * material->ks + reflection * material->ks;
+                + (specular + reflection) * material->ks;
         }
     }
 }

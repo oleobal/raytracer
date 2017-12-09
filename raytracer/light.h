@@ -37,16 +37,20 @@ public:
     Color color;
 };
 
+// Forward declaration (as object.h is dependant of light.h)
+class Object;
+
 class Ray
 {
 public:
-    static const int maxReflections = 10;
+    static const int maxReflections = 2;
     Point O;
     Vector D;
     int reflection;
+    Object* origin;
 
-    Ray(const Point &from, const Vector &dir, int reflection = 0)
-        : O(from), D(dir), reflection(reflection)
+    Ray(const Point &from, const Vector &dir, int reflection = 0, Object* origin = nullptr)
+        : O(from), D(dir), reflection(reflection), origin(origin)
     {
 		if (reflection == maxReflections)
 			throw string("Too many reflections");
