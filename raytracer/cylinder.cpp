@@ -59,6 +59,8 @@ Hit Cylinder::intersect(const Ray &ray)
 		otherSol = x1;
 	}	
 	
+	if (rightSol < 0)
+		return Hit::NO_HIT();
 	
 	// check whether the point is indeed inside the boundaries of the cylinder
 	
@@ -67,8 +69,11 @@ Hit Cylinder::intersect(const Ray &ray)
 	
 	if (z0.dot(p0-p1) >= 0 && z1.dot(p1-p0) >= 0)
 		return Hit(x1, (ray.O + ray.D*rightSol - p0).normalized());
+	
 	else
 	{
+		if (otherSol < 0)
+			return Hit::NO_HIT();
 		z0 = Vector(p0 - ray.at(otherSol)).normalized();
 		z1 = Vector(p1 - ray.at(otherSol)).normalized();
 		if (z0.dot(p0-p1) >= 0 && z1.dot(p1-p0) >= 0)

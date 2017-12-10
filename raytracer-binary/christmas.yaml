@@ -23,15 +23,15 @@ Objects:
 # floor
 
 # it's a little-prince style floor
-- type: sphere
-  position: [250,-400,150]
-  radius: 500
-  material: # brown sortof
-    color: [0.5,0.5,0.0]
-    ka: 0.2
-    kd: 0.7
-    ks: 0.0
-    n: 64
+#- type: sphere
+#  position: [250,-400,150]
+#  radius: 500
+#  material: # brown sortof
+#    color: [0.5,0.5,0.0]
+#    ka: 0.2
+#    kd: 0.7
+#    ks: 0.0
+#    n: 64
 
 
 # tree
