@@ -117,7 +117,9 @@ Color Scene::trace(const Ray &ray)
             // Reflections
             try
             {
-                Vector refl = 2 * ray.D.dot(N) * N - ray.D;
+				Vector n = N.normalized();
+				Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
+ 
                 Ray reflRay = Ray(hit, refl, ray.reflection+1, obj);
                 reflection = trace(reflRay);
             }

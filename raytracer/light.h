@@ -49,7 +49,7 @@ public:
     int reflection;
     Object* origin;
 
-    Ray(const Point &from, const Vector &dir, int reflection = 0, Object* origin = nullptr)
+    Ray(const Point &from, const Vector &dir, int reflection = 0, Object* origin = NULL)
         : O(from), D(dir), reflection(reflection), origin(origin)
     {
 		if (reflection == maxReflections)
