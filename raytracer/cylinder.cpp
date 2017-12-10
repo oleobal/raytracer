@@ -68,7 +68,7 @@ Hit Cylinder::intersect(const Ray &ray)
 	Vector z1 = Vector(p1 - ray.at(rightSol)).normalized();
 	
 	if (z0.dot(p0-p1) >= 0 && z1.dot(p1-p0) >= 0)
-		return Hit(x1, (ray.O + ray.D*rightSol - p0).normalized());
+		return Hit(rightSol, (ray.O + ray.D*rightSol - p0).normalized());
 	
 	else
 	{
@@ -77,7 +77,7 @@ Hit Cylinder::intersect(const Ray &ray)
 		z0 = Vector(p0 - ray.at(otherSol)).normalized();
 		z1 = Vector(p1 - ray.at(otherSol)).normalized();
 		if (z0.dot(p0-p1) >= 0 && z1.dot(p1-p0) >= 0)
-			return Hit(x1, (ray.O + ray.D*otherSol - p0).normalized());
+			return Hit(otherSol, (ray.O + ray.D*otherSol - p0).normalized());
 		else
 			return Hit::NO_HIT();
 	}
