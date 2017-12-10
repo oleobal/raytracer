@@ -3,8 +3,6 @@
 #    Vincent Fabioux
 #    Olivier Léobal
 
-RenderMode: "phong"
-
 Eye: [200, 200, 500]
 
 Shadows: true

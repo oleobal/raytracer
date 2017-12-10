@@ -137,7 +137,11 @@ bool Raytracer::readScene(const std::string& inputFilename)
             parser.GetNextDocument(doc);
 
             std::string renderMode;
-			doc["RenderMode"] >> renderMode;
+            try
+            { doc["RenderMode"] >> renderMode; }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { renderMode = "phong"; }
+			
 			if (renderMode == "normal")
 				scene->setRenderMode(Scene::normal);
             else if (renderMode == "zbuffer")
@@ -156,10 +160,12 @@ bool Raytracer::readScene(const std::string& inputFilename)
             }
 			
             // Read whether shadows should be used or not
-            bool enableShadows;
-            if((enableShadows = doc["Shadows"]))
-                scene->setEnableShadows(enableShadows);
-                
+            try
+            { scene->setEnableShadows(doc["Shadows"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setEnableShadows(false); }
+            
+            // Read the number of recursions for reflexions
             try
             { scene->setMaxRecursionDepth(doc["MaxRecursionDepth"]); }
             catch (YAML::TypedKeyNotFound<std::string>)
