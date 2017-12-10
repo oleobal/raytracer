@@ -159,7 +159,11 @@ bool Raytracer::readScene(const std::string& inputFilename)
             bool enableShadows;
             if((enableShadows = doc["Shadows"]))
                 scene->setEnableShadows(enableShadows);
-
+                
+            try
+            { scene->setMaxRecursionDepth(doc["MaxRecursionDepth"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setMaxRecursionDepth(0); }
 
             // Read scene configuration options
             scene->setEye(parseTriple(doc["Eye"]));

@@ -22,9 +22,11 @@
 #include "scene.h"
 #include "material.h"
 
-
-Color Scene::trace(const Ray &ray)
+Color Scene::trace(const Ray &ray, int recursionDepth)
 {
+	if (recursionDepth > maxRecursionDepth)
+		return Color(0.0, 0.0, 0.0);
+	
     // Find hit object and distance
     Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
     Object *obj = NULL;
@@ -115,18 +117,11 @@ Color Scene::trace(const Ray &ray)
             }
 
             // Reflections
-            try
-            {
-				Vector n = N.normalized();
-				Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
- 
-                Ray reflRay = Ray(hit, refl, ray.reflection+1, obj);
-                reflection = trace(reflRay);
-            }
-            catch(string e)
-            {
-                reflection = Color(0.0, 0.0, 0.0);
-            }
+			Vector n = N.normalized();
+			Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
+
+			Ray reflRay = Ray(hit, refl, ray.reflection+1, obj);
+			reflection = trace(reflRay, recursionDepth+1);
 
             // Returning all components together with their coefficients applied.
             // The ambient component is added, and both the ambient and diffuse
@@ -135,6 +130,15 @@ Color Scene::trace(const Ray &ray)
                 + (specular + reflection) * material->ks;
         }
     }
+}
+
+
+/**
+ * recursion-blind call for compatibility
+ */
+Color Scene::trace(const Ray &ray)
+{
+	return trace(ray, 0);
 }
 
 void Scene::render(Image &img)

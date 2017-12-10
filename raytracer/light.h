@@ -43,7 +43,6 @@ class Object;
 class Ray
 {
 public:
-    static const int maxReflections = 2;
     Point O;
     Vector D;
     int reflection;
@@ -51,10 +50,7 @@ public:
 
     Ray(const Point &from, const Vector &dir, int reflection = 0, Object* origin = NULL)
         : O(from), D(dir), reflection(reflection), origin(origin)
-    {
-		if (reflection == maxReflections)
-			throw string("Too many reflections");
-	}
+    {}
 
     Point at(double t) const
     { return O + t*D; }

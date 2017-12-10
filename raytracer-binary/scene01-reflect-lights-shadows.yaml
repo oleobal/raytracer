@@ -17,7 +17,7 @@ Eye: [200,200,1000]
 RenderMode: "phong"
 
 Shadows: true
-MaxRecursionDepth: 2
+MaxRecursionDepth: 100
 
 Lights:
 - position: [-200,600,1500]

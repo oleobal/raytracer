@@ -43,8 +43,10 @@ private:
     double nearClippingDistance;
     double farClippingDistance;
     bool enableShadows;
+    int maxRecursionDepth;
 
 public:
+    Color trace(const Ray &ray, int recursionDepth);
     Color trace(const Ray &ray);
     void render(Image &img);
     void addObject(Object *o);
@@ -57,6 +59,7 @@ public:
     void setNearClippingDistance(double value) { nearClippingDistance = value; }
     void setFarClippingDistance(double value) { farClippingDistance = value; }
     void setEnableShadows(bool value) { enableShadows = value; }
+    void setMaxRecursionDepth(int value) {maxRecursionDepth = value; }
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */
