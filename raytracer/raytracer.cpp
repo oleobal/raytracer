@@ -191,6 +191,10 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 scene->setWidth(camera["resolution"][0]);
                 scene->setHeight(camera["resolution"][1]);
             }
+			try
+            { scene->setsuperSamplingMult(doc["SuperSampling"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setsuperSamplingMult(1); }
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];

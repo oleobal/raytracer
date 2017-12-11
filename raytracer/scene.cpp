@@ -132,25 +132,33 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
     }
 }
 
-
 /**
- * recursion-blind call for compatibility
+ * superSamplingMult : size of grid of points for each pixel
+ * ex : 2 -> 2*2 = 4 samples per pixel
+ * (default should be 1, ie disabled)
  */
-Color Scene::trace(const Ray &ray)
-{
-	return trace(ray, 0);
-}
-
 void Scene::render(Image &img)
 {
+	double s = 1.0/(superSamplingMult+1);
+	
     int w = img.width();
     int h = img.height();
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
-            Point pixel(x+0.5, h-1-y+0.5, 0);
-            Ray ray(eye, (pixel-eye).normalized());
-            Color col = trace(ray);
-            col.clamp();
+			Color col = Color(0.0,0.0,0.0);
+			for (int sx = 0 ; sx < superSamplingMult ; sx++)
+			{
+				for (int sy = 0 ; sy < superSamplingMult ; sy++)
+				{
+					Point pixel(x+s+sx*s, h-1-y+s+sy*s, 0);
+					Ray ray(eye, (pixel-eye).normalized());
+					
+					Color colbuf = trace(ray);
+					col += (colbuf);
+				}
+			}
+			col = col / (superSamplingMult*superSamplingMult);
+			col.clamp();
             img(x,y) = col;
         }
     }

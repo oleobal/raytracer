@@ -48,10 +48,10 @@ private:
     Triple upVector;
     int width;
     int height;
+    int superSamplingMult;
 
 public:
-    Color trace(const Ray &ray, int recursionDepth);
-    Color trace(const Ray &ray);
+    Color trace(const Ray &ray, int recursionDepth=0);
     void render(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);
@@ -70,6 +70,7 @@ public:
     void setHeight(int value) { height = value; }
     int getWidth() { return width; }
     int getHeight() { return height; }
+    void setsuperSamplingMult(int value) {superSamplingMult = value; }
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */
