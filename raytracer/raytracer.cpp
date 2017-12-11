@@ -171,6 +171,12 @@ bool Raytracer::readScene(const std::string& inputFilename)
             catch (YAML::TypedKeyNotFound<std::string>)
             { scene->setMaxRecursionDepth(0); }
 
+			try
+            { scene->setsuperSamplingMult(doc["SuperSampling"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setsuperSamplingMult(1); }
+
+
             // Read scene configuration options
             scene->setEye(parseTriple(doc["Eye"]));
 

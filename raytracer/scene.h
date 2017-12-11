@@ -44,10 +44,10 @@ private:
     double farClippingDistance;
     bool enableShadows;
     int maxRecursionDepth;
+    int superSamplingMult;
 
 public:
-    Color trace(const Ray &ray, int recursionDepth);
-    Color trace(const Ray &ray);
+    Color trace(const Ray &ray, int recursionDepth=0);
     void render(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);
@@ -60,6 +60,7 @@ public:
     void setFarClippingDistance(double value) { farClippingDistance = value; }
     void setEnableShadows(bool value) { enableShadows = value; }
     void setMaxRecursionDepth(int value) {maxRecursionDepth = value; }
+    void setsuperSamplingMult(int value) {superSamplingMult = value; }
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */
