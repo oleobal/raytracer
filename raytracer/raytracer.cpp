@@ -54,6 +54,14 @@ Triple parseTriple(const YAML::Node& node)
 Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
     Material *m = new Material();
+    try
+    { node["refract"] >> m->refract;}
+	catch (...)
+	{ m->refract = false;}
+	try
+	{ node["eta"] >> m->eta;}
+	catch (...)
+	{ m->eta=1.0; }
     node["color"] >> m->color;	
     node["ka"] >> m->ka;
     node["kd"] >> m->kd;

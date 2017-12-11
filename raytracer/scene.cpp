@@ -69,6 +69,17 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
         }
         default: // Phong rendering
         {
+			if (material->refract)
+			{
+				//shoot new ray according to eta (refraction indice)
+				//Vector n = N.normalized();
+				//Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
+				Vector refr = ray.D * material->eta;
+
+				Ray refrRay = Ray(hit, refr, ray.reflection+1, obj);
+				return trace(refrRay, recursionDepth+1);
+			}
+			
             // Computing of the color using the Phong reflection model:
             // https://en.wikipedia.org/wiki/Phong_reflection_model
 

@@ -26,6 +26,9 @@
 class Material
 {
 public:
+	bool refract;        // whether the material is transparent
+	double eta;         // refractive indice
+	
     Color color;        // base color
     double ka;          // ambient intensity
     double kd;          // diffuse intensity
