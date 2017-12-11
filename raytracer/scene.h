@@ -44,6 +44,10 @@ private:
     double farClippingDistance;
     bool enableShadows;
     int maxRecursionDepth;
+    Triple lookAt;
+    Triple upVector;
+    int width;
+    int height;
     int superSamplingMult;
 
 public:
@@ -60,6 +64,12 @@ public:
     void setFarClippingDistance(double value) { farClippingDistance = value; }
     void setEnableShadows(bool value) { enableShadows = value; }
     void setMaxRecursionDepth(int value) {maxRecursionDepth = value; }
+    void setLookAt(Triple value) { lookAt = value; }
+    void setUpVector(Triple value) { upVector = value; }
+    void setWidth(int value) { width = value; }
+    void setHeight(int value) { height = value; }
+    int getWidth() { return width; }
+    int getHeight() { return height; }
     void setsuperSamplingMult(int value) {superSamplingMult = value; }
 };
 

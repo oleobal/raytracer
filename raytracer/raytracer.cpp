@@ -179,14 +179,30 @@ bool Raytracer::readScene(const std::string& inputFilename)
             catch (YAML::TypedKeyNotFound<std::string>)
             { scene->setMaxRecursionDepth(0); }
 
+            // Read camera configuration
+            try
+            { 
+                // Old camera "Eye" : has default parameters
+                Triple eye = doc["Eye"];
+                scene->setEye(parseTriple(doc["Eye"]));
+                scene->setLookAt(Vector(eye.x, eye.y, eye.z + 1.0));
+                scene->setUpVector(Vector(0.0, 1.0, 0.0));
+                scene->setWidth(400);
+                scene->setHeight(400);
+            }
+            catch(YAML::TypedKeyNotFound<std::string>)
+            {
+                const YAML::Node& camera = doc["Camera"];
+                scene->setEye(parseTriple(camera["position"]);
+                scene->setLookAt(parseTriple(camera["lookat"]));
+                scene->setUpVector(parseTriple(camera["up"]));
+                scene->setWidth(camera["resolution"][0]);
+                scene->setHeight(camera["resolution"][1]);
+            }
 			try
             { scene->setsuperSamplingMult(doc["SuperSampling"]); }
             catch (YAML::TypedKeyNotFound<std::string>)
             { scene->setsuperSamplingMult(1); }
-
-
-            // Read scene configuration options
-            scene->setEye(parseTriple(doc["Eye"]));
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];
@@ -228,7 +244,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
 
 void Raytracer::renderToFile(const std::string& outputFilename)
 {
-    Image img(400,400);
+    Image img(scene->getWidth(), scene->getHeight());
     cout << "Tracing..." << endl;
     scene->render(img);
     cout << "Writing image to " << outputFilename << "..." << endl;
