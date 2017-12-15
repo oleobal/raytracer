@@ -69,9 +69,6 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
         }
         default: // Phong rendering
         {
-			
-
-			
             // Computing of the color using the Phong reflection model:
             // https://en.wikipedia.org/wiki/Phong_reflection_model
 
@@ -127,28 +124,22 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
 			reflection = trace(reflRay, recursionDepth+1);
 			
 			// Refraction/transparency
-			Color refraction ;
+			Color refraction = Color(0,0,0); ;
 			if (material->opacity < 1.0)
 			{
 				//shoot new ray according to eta (refraction indice)
 				//Vector n = N.normalized();
 				//Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
-				Vector refr = ray.D * material->eta;
 				
-				//FIXME actual calculation
-
-				Ray refrRay = Ray(hit, refr, ray.reflection+1, obj);
-				refraction = trace(refrRay, recursionDepth+1);
-				
-				//TODO totally add chromatic aberration !
-				//shoot something like 16 rays of different colors in varying angles
-				
-				//TODO low material->ks should mean fuzzy refractions (like frosted glass)
-				//I mean, maybe, I imagine
+				try
+				{
+					Vector refr = getRefracted(ray.D, N.normalized(), 1, material->eta);
+					Ray refrRay = Ray(hit, refr, ray.reflection+1, obj);
+					refraction = trace(refrRay, recursionDepth+1);
+				}
+				catch (...)
+				{ }
 			}
-			else
-				refraction = Color(0,0,0);
-				
 
             // Returning all components together with their coefficients applied.
             // The ambient component is added, and both the ambient and diffuse
@@ -206,4 +197,18 @@ void Scene::addLight(Light *l)
 void Scene::setEye(Triple e)
 {
     eye = e;
+}
+
+
+Vector Scene::getRefracted(Vector in, Vector normal, double eta1, double eta2)
+{
+	Vector res;
+	double root = 1.0 - (((eta1*eta1)*(1.0 - (in.dot(normal)*in.dot(normal)))))/  (eta2*eta2);
+
+	if (root < 0)
+		throw "Oops";
+		
+	res = ((eta1*(in - normal*(in.dot(normal))))/eta2) - (normal*sqrt(root));
+		
+	return res;
 }
