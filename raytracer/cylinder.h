@@ -30,6 +30,7 @@ public:
     Cylinder(Point p0, Point p1, double r) : p0(p0), p1(p1), r(r) {};
 
     virtual Hit intersect(const Ray &ray);
+    virtual bool hasWithin(Point p);
 
     const Point p0, p1;
     const double r;

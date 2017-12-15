@@ -32,6 +32,7 @@ public:
     Triangle(Point p0, Point p1, Point p2);
 
     virtual Hit intersect(const Ray &ray);
+    virtual bool hasWithin(Point p);
 
     const Point p0, p1, p2;
     const Vector N;

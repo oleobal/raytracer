@@ -81,3 +81,12 @@ Hit Sphere::intersect(const Ray &ray)
 
     return Hit(t,N);
 }
+
+bool Sphere::hasWithin(Point p)
+{
+	Vector v = p-position;
+	
+	if (v.length() < r)
+		return true;
+	return false;
+}

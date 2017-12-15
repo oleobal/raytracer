@@ -30,6 +30,7 @@ public:
     Sphere(Point position,double r) : position(position), r(r) { }
 
     virtual Hit intersect(const Ray &ray);
+    virtual bool hasWithin(Point p);
 
     const Point position;
     const double r;
