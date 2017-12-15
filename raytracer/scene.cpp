@@ -69,16 +69,8 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
         }
         default: // Phong rendering
         {
-			if (material->refract)
-			{
-				//shoot new ray according to eta (refraction indice)
-				//Vector n = N.normalized();
-				//Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
-				Vector refr = ray.D * material->eta;
+			
 
-				Ray refrRay = Ray(hit, refr, ray.reflection+1, obj);
-				return trace(refrRay, recursionDepth+1);
-			}
 			
             // Computing of the color using the Phong reflection model:
             // https://en.wikipedia.org/wiki/Phong_reflection_model
@@ -133,12 +125,38 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
 
 			Ray reflRay = Ray(hit, refl, ray.reflection+1, obj);
 			reflection = trace(reflRay, recursionDepth+1);
+			
+			// Refraction/transparency
+			Color refraction ;
+			if (material->opacity < 1.0)
+			{
+				//shoot new ray according to eta (refraction indice)
+				//Vector n = N.normalized();
+				//Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
+				Vector refr = ray.D * material->eta;
+				
+				//FIXME actual calculation
+
+				Ray refrRay = Ray(hit, refr, ray.reflection+1, obj);
+				refraction = trace(refrRay, recursionDepth+1);
+				
+				//TODO totally add chromatic aberration !
+				//shoot something like 16 rays of different colors in varying angles
+				
+				//TODO low material->ks should mean fuzzy refractions (like frosted glass)
+				//I mean, maybe, I imagine
+			}
+			else
+				refraction = Color(0,0,0);
+				
 
             // Returning all components together with their coefficients applied.
             // The ambient component is added, and both the ambient and diffuse
             // components are affected by the material color.
-            return (material->ka + diffuse * material->kd) * material->color
-                + (specular + reflection) * material->ks;
+            return
+            material->opacity * ((material->ka + diffuse * material->kd) * material->color)
+            + (1-material->opacity) * refraction
+            + (specular + reflection) * material->ks;
         }
     }
 }

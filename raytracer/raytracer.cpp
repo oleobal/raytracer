@@ -55,9 +55,9 @@ Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
     Material *m = new Material();
     try
-    { node["refract"] >> m->refract;}
+    { node["opacity"] >> m->opacity;}
 	catch (...)
-	{ m->refract = false;}
+	{ m->opacity = 1.0;}
 	try
 	{ node["eta"] >> m->eta;}
 	catch (...)
@@ -193,7 +193,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
             catch(YAML::TypedKeyNotFound<std::string>)
             {
                 const YAML::Node& camera = doc["Camera"];
-                scene->setEye(parseTriple(camera["position"]);
+                scene->setEye(parseTriple(camera["position"]));
                 scene->setLookAt(parseTriple(camera["lookat"]));
                 scene->setUpVector(parseTriple(camera["up"]));
                 scene->setWidth(camera["resolution"][0]);
