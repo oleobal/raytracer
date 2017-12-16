@@ -14,15 +14,15 @@
 
 Camera:
   position: [200,200,1000]
-  lookat: [90, 320, 100]
+  lookat: [200, 200, 1500]
   up: [0, 1, 0]
-  resolution: [800, 600]
+  resolution: [400, 400]
 
 Shadows: true
-MaxRecursionDepth: 100
+MaxRecursionDepth: 10
 
 # Square root of the number of samples per pixel
-SuperSampling: 3
+SuperSampling: 1
 
 Lights:
 - position: [-200,600,1500]

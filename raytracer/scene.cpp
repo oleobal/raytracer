@@ -143,6 +143,7 @@ void Scene::render(Image &img)
 	
     int w = img.width();
     int h = img.height();
+
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
 			Color col = Color(0.0,0.0,0.0);
@@ -150,7 +151,7 @@ void Scene::render(Image &img)
 			{
 				for (int sy = 0 ; sy < superSamplingMult ; sy++)
 				{
-					Point pixel(x+s+sx*s, h-1-y+s+sy*s, 0);
+					Point pixel(w/2 - (x+s+sx*s), h/2-(y+s+sy*s), 0);
 					Ray ray(eye, (pixel-eye).normalized());
 					
 					Color colbuf = trace(ray);
