@@ -45,11 +45,12 @@ class Ray
 public:
     Point O;
     Vector D;
-    int reflection;
     Object* origin;
+    const Ray* parent;
+    double eta; // the refraction indice this ray is in
 
-    Ray(const Point &from, const Vector &dir, int reflection = 0, Object* origin = NULL)
-        : O(from), D(dir), reflection(reflection), origin(origin)
+    Ray(const Point &from, const Vector &dir, Object* origin = NULL, const Ray* parent = NULL, double eta=1)
+        : O(from), D(dir), origin(origin), parent(parent), eta(eta)
     {}
 
     Point at(double t) const
