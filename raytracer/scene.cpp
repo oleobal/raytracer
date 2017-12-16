@@ -120,21 +120,42 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
 			Vector n = N.normalized();
 			Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
 
-			Ray reflRay = Ray(hit, refl, ray.reflection+1, obj);
+			Ray reflRay = Ray(hit, refl, obj);
 			reflection = trace(reflRay, recursionDepth+1);
+			
 			
 			// Refraction/transparency
 			Color refraction = Color(0,0,0); ;
 			if (material->opacity < 1.0)
 			{
-				//shoot new ray according to eta (refraction indice)
-				//Vector n = N.normalized();
-				//Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
-				
 				try
 				{
-					Vector refr = getRefracted(ray.D, N.normalized(), 1, material->eta);
-					Ray refrRay = Ray(hit, refr, ray.reflection+1, obj);
+					double etaFrom = 1, etaOut=1;
+					// where are we coming from ?
+					if (ray.parent != NULL)
+						etaFrom = ray.parent->eta;
+					
+					
+					// N can be pointing towards or away from us,
+					// could be used for determining whether we are entering or exiting
+					// but only for convex objects
+					Vector refr;
+					if (N.dot(ray.D) >=0) // hitting from inside
+					{
+						// we are getting out, yes, but are we still inside some other object ?
+						// the last one defined overwrites the rest
+						Object* container = getObjectsContaining(hit, obj).back();
+						if (container != NULL) 
+							etaOut = container->material->eta;
+						refr = getRefracted(ray.D, N.normalized(), etaFrom, etaOut);
+					}
+					else // hitting from outside
+					{
+						etaOut = material->eta;
+						refr = getRefracted(-ray.D, N.normalized(), etaFrom, etaOut);
+					}
+					
+					Ray refrRay = Ray(hit, refr, obj, &ray, etaOut);
 					refraction = trace(refrRay, recursionDepth+1);
 				}
 				catch (...)
@@ -218,6 +239,25 @@ void Scene::setEye(Triple e)
     eye = e;
 }
 
+
+/**
+ * returns a list of object that contain the point p
+ * 
+ * if excepted is given, it won't be included in the list
+ */
+std::vector<Object*> Scene::getObjectsContaining(Point p, Object* excepted = NULL)
+{
+	std::vector<Object*> result = std::vector<Object*>();
+	for (int i = 0 ; i< objects.size() ; i++)
+	{
+		if (objects[i]->hasWithin(p))
+		{
+			if (objects[i] != excepted)
+				result.push_back(objects[i]);
+		}
+	}
+	return result;
+}
 
 Vector Scene::getRefracted(Vector in, Vector normal, double eta1, double eta2)
 {
