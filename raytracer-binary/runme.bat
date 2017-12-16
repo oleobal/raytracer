@@ -1,4 +1,8 @@
-raytracer.exe scene01-lights-shadows.yaml
-raytracer.exe scene01-reflect-lights-shadows.yaml
-raytracer.exe scene01-shadows.yaml
-raytracer.exe christmas.yaml
+raytracer.exe camera-big.yaml
+raytracer.exe camera-blue-planet.yaml
+raytracer.exe camera-focus-red.yaml
+raytracer.exe camera-forward.yaml
+raytracer.exe camera-move.yaml
+raytracer.exe camera-old.yaml
+raytracer.exe camera-roll.yaml
+raytracer.exe camera-unzoom.yaml

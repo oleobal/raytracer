@@ -14,7 +14,7 @@
 
 Camera:
   position: [200,200,1000]
-  lookat: [200, 200, 1500]
+  lookat: [200, 200, 0]
   up: [0, 1, 0]
   resolution: [400, 400]
 

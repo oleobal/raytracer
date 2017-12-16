@@ -22,6 +22,7 @@
 #ifndef SCENE_H_KNBLQLP6
 #define SCENE_H_KNBLQLP6
 
+#include <math.h>
 #include <vector>
 #include "triple.h"
 #include "light.h"

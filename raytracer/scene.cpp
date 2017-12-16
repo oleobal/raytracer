@@ -164,16 +164,34 @@ void Scene::render(Image &img)
     int w = img.width();
     int h = img.height();
 
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
+    // Up and right vector for the screen coordinates in 3D space
+    Vector up = upVector.normalized();
+    Vector right = up.cross(lookAt-eye).normalized();
+
+    // We always keep the same pixel to unit ratio (1 pixel per unit) and make
+    // the focal distance vary according to the horizontal FOV (lenght of the
+    // up vector):
+    //     fov = arctan(w / 2 / f) * 180 / pi * 2
+    // <=> f = w / 2 / tan(fov / 180 * pi / 2)
+    double focalDistance = w / 2 / tan(upVector.length() / 180.0 * M_PI / 2);
+
+    // Center of the screen in 3D space
+    Point center = (lookAt-eye).normalized() * focalDistance + eye;
+
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
 			Color col = Color(0.0,0.0,0.0);
 			for (int sx = 0 ; sx < superSamplingMult ; sx++)
 			{
 				for (int sy = 0 ; sy < superSamplingMult ; sy++)
 				{
-					Point pixel(w/2 - (x+s+sx*s), h/2-(y+s+sy*s), 0);
-					Ray ray(eye, (pixel-eye).normalized());
-					
+                    Point pixel = right * (w / 2 - (x+s+sx*s))
+                        + up * (h / 2 - (y+s+sy*s))
+                        + center;
+
+                    Ray ray(eye, (pixel-eye).normalized());
 					Color colbuf = trace(ray);
 					col += (colbuf);
 				}

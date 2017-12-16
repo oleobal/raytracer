@@ -185,8 +185,8 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 // Old camera "Eye" : has default parameters
                 Triple eye = doc["Eye"];
                 scene->setEye(parseTriple(doc["Eye"]));
-                scene->setLookAt(Vector(eye.x, eye.y, eye.z + 1.0));
-                scene->setUpVector(Vector(0.0, 1.0, 0.0));
+                scene->setLookAt(Vector(eye.x, eye.y, eye.z - 1.0));
+                scene->setUpVector(Vector(0.0, 22.6198649, 0.0));
                 scene->setWidth(400);
                 scene->setHeight(400);
             }
