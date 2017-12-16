@@ -122,12 +122,32 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
 
 			Ray reflRay = Ray(hit, refl, ray.reflection+1, obj);
 			reflection = trace(reflRay, recursionDepth+1);
+			
+			// Refraction/transparency
+			Color refraction = Color(0,0,0); ;
+			if (material->opacity < 1.0)
+			{
+				//shoot new ray according to eta (refraction indice)
+				//Vector n = N.normalized();
+				//Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
+				
+				try
+				{
+					Vector refr = getRefracted(ray.D, N.normalized(), 1, material->eta);
+					Ray refrRay = Ray(hit, refr, ray.reflection+1, obj);
+					refraction = trace(refrRay, recursionDepth+1);
+				}
+				catch (...)
+				{ }
+			}
 
             // Returning all components together with their coefficients applied.
             // The ambient component is added, and both the ambient and diffuse
             // components are affected by the material color.
-            return (material->ka + diffuse * material->kd) * material->color
-                + (specular + reflection) * material->ks;
+            return
+            material->opacity * ((material->ka + diffuse * material->kd) * material->color)
+            + (1-material->opacity) * refraction
+            + (specular + reflection) * material->ks;
         }
     }
 }
@@ -178,4 +198,18 @@ void Scene::addLight(Light *l)
 void Scene::setEye(Triple e)
 {
     eye = e;
+}
+
+
+Vector Scene::getRefracted(Vector in, Vector normal, double eta1, double eta2)
+{
+	Vector res;
+	double root = 1.0 - (((eta1*eta1)*(1.0 - (in.dot(normal)*in.dot(normal)))))/  (eta2*eta2);
+
+	if (root < 0)
+		throw "Oops";
+		
+	res = ((eta1*(in - normal*(in.dot(normal))))/eta2) - (normal*sqrt(root));
+		
+	return res;
 }

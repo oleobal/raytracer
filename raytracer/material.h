@@ -26,6 +26,9 @@
 class Material
 {
 public:
+	double opacity;     // how opaque the material is (0 clear, 1 fully)
+	double eta;         // refractive indice
+	
     Color color;        // base color
     double ka;          // ambient intensity
     double kd;          // diffuse intensity

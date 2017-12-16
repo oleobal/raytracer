@@ -82,3 +82,14 @@ Hit Cylinder::intersect(const Ray &ray)
 			return Hit::NO_HIT();
 	}
 }
+
+
+bool Cylinder::hasWithin(Point p)
+{
+	Vector z0 = Vector(p0 - p).normalized();
+	Vector z1 = Vector(p1 - p).normalized();
+	
+	if (z0.dot(p0-p1) >= 0 && z1.dot(p1-p0) >= 0)
+		return true;
+	return false;
+}

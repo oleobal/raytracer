@@ -56,6 +56,7 @@ public:
     void addObject(Object *o);
     void addLight(Light *l);
     void setEye(Triple e);
+    Vector getRefracted(Vector in, Vector normal, double eta1, double eta2);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
 

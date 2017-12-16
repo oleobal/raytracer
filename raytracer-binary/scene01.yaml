@@ -61,7 +61,9 @@ Objects:
 - type: sphere
   position: [140,220,400]
   radius: 50
-  material: # yellow
+  material: # clear glass
+    opacity: 0.0
+    eta: 1.45
     color: [1.0,0.8,0.0]
     ka: 0.2
     kd: 0.8

@@ -97,3 +97,10 @@ Hit Triangle::intersect(const Ray &ray)
     // N (normal vector) has been calculated at initialization
     return Hit(t,N);
 }
+
+// doesn't really make much sense since a triangle has no volume but whatever
+bool Triangle::hasWithin(Point p)
+{
+	//TODO/FIXME
+	return false;
+}
