@@ -16,13 +16,13 @@ Camera:
   position: [200,200,1000]
   lookat: [200, 200, 0]
   up: [0, 22.6, 0]
-  resolution: [400, 400]
+  resolution: [200, 200]
 
 Shadows: true
 MaxRecursionDepth: 10
 
 # Square root of the number of samples per pixel
-SuperSampling: 1
+SuperSampling: 3
 
 Lights:
 - position: [-200,600,1500]
@@ -61,9 +61,7 @@ Objects:
 - type: sphere
   position: [140,220,400]
   radius: 50
-  material: # clear glass
-    opacity: 0.0
-    eta: 1.45
+  material: # yellow
     color: [1.0,0.8,0.0]
     ka: 0.2
     kd: 0.8
