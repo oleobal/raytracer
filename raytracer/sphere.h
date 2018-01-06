@@ -27,13 +27,17 @@
 class Sphere : public Object
 {
 public:
-    Sphere(Point position,double r) : position(position), r(r) { }
+	Sphere (Point position,double r, Vector up, double spin) : position(position), r(r), thisWayUp(up), spin(spin) { }
+    Sphere(Point position,double r) : position(position), r(r), thisWayUp(Vector(0,0,1)), spin(0.0) { }
 
     virtual Hit intersect(const Ray &ray);
     virtual bool hasWithin(Point p);
 
     const Point position;
     const double r;
+    
+    const Vector thisWayUp;
+    const double spin; // with thisWayUp as axis
 };
 
 #endif /* end of include guard: SPHERE_H_115209AE */

@@ -62,6 +62,14 @@ Material* Raytracer::parseMaterial(const YAML::Node& node)
 	{ node["eta"] >> m->eta;}
 	catch (...)
 	{ m->eta=1.0; }
+	try
+	{
+		std::string s ;
+		node["texture"] >> s;
+		m->texture = new Image(s.c_str());
+    }
+	catch (...)
+	{ m->texture=NULL; }
     node["color"] >> m->color;	
     node["ka"] >> m->ka;
     node["kd"] >> m->kd;
@@ -82,7 +90,20 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["position"] >> pos;
         double r;
         node["radius"] >> r;
-        Sphere *sphere = new Sphere(pos,r);		
+        
+        Vector up;
+        try
+		{ node["up"] >> up;}
+		catch (...)
+		{ up = Vector(0,0,1); }
+		
+		double spin;
+		try
+		{ node["spin"] >> spin;}
+		catch (...)
+		{ spin=0.0; }
+		
+		Sphere *sphere = new Sphere(pos,r,up,spin);		
         returnObject = sphere;
     }
     else if(objectType == "triangle")

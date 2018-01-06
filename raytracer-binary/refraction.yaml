@@ -19,7 +19,10 @@ Camera:
   resolution: [400, 400]
 
 Shadows: true
-MaxRecursionDepth: 1
+MaxRecursionDepth: 10
+
+# Square root of the number of samples per pixel
+SuperSampling: 1
 
 Lights:
 - position: [-200,600,1500]
@@ -58,11 +61,10 @@ Objects:
 - type: sphere
   position: [140,220,400]
   radius: 50
-  up: [0.0,0.0,1.0]
-  spin: 0.0
-  material:
-    color: [0.5,0.5,1.0]
-    texture: "earth.jpg"
+  material: # clear glass
+    opacity: 0.0
+    eta: 1.45
+    color: [1.0,0.8,0.0]
     ka: 0.2
     kd: 0.8
     ks: 0
