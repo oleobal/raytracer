@@ -32,6 +32,8 @@ public:
 
     virtual Hit intersect(const Ray &ray);
     virtual bool hasWithin(Point p);
+    
+    virtual Color colorAt(Hit h);
 
     const Point position;
     const double r;

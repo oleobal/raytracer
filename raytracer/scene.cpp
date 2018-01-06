@@ -161,12 +161,13 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
 				catch (...)
 				{ }
 			}
+			
 
             // Returning all components together with their coefficients applied.
             // The ambient component is added, and both the ambient and diffuse
             // components are affected by the material color.
             return
-            material->opacity * ((material->ka + diffuse * material->kd) * material->color)
+            material->opacity * ((material->ka + diffuse * material->kd) * obj->colorAt(min_hit))
             + (1-material->opacity) * refraction
             + (specular + reflection) * material->ks;
         }
