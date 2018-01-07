@@ -166,7 +166,16 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 scene->setNearClippingDistance(near);
                 scene->setFarClippingDistance(far);
             }
-			
+			else if (renderMode == "gooch")
+            {
+                const YAML::Node& gooch = doc["GoochParameters"];
+                scene->setRenderMode(Scene::gooch);
+                scene->setB(gooch["b"]);
+                scene->setY(gooch["y"]);
+                scene->setAlpha(gooch["alpha"]);
+                scene->setBeta(gooch["beta"]);
+            }
+
             // Read whether shadows should be used or not
             try
             { scene->setEnableShadows(doc["Shadows"]); }

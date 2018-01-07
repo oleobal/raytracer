@@ -33,7 +33,7 @@ class Scene
 {
 public:
     enum RenderMode {
-        phong, zbuffer, normal
+        phong, zbuffer, normal, gooch
     };
 
 private:
@@ -50,9 +50,14 @@ private:
     int width;
     int height;
     int superSamplingMult;
+    float b;
+    float y;
+    float alpha;
+    float beta;
 
 public:
     Color trace(const Ray &ray, int recursionDepth=0);
+    bool checkShadow(const Object* obj, const Point& hit, const Hit& min_hit, const Vector& L);
     void render(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);
@@ -74,6 +79,10 @@ public:
     int getWidth() { return width; }
     int getHeight() { return height; }
     void setsuperSamplingMult(int value) {superSamplingMult = value; }
+    void setB(float value) { b = value; }
+    void setY(float value) { y = value; }
+    void setAlpha(float value) { alpha = value; }
+    void setBeta(float value) { beta = value; }
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */

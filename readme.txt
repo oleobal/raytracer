@@ -2,9 +2,9 @@
 	Vincent Fabioux
 	Olivier Léobal
 
-Week: 4
+Week: 5
 
 Camera:
-	The length of the up vector is the horizontal field of view.
-	There are a lot of examples for multiple camera changes, including one
-	with the old model (camera-old) and one cool example (camera-blue-planet).
+	scene01-gooch-full has shadows, supersampling and reflexions activated.
+	Light position was set back to the same position than in scene01-shadows.yaml
+	so that we can see the effect of shadows on other objects.

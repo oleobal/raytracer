@@ -67,6 +67,43 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
         {
             return Color((N + Vector(1.0, 1.0, 1.0)) / 2.0);
         }
+        case gooch: // Gooch illumination model
+        {
+            Color diffuse, specular, reflection;
+            Color kCool = Color(0, 0, b) + alpha*material->color;
+            Color kWarm = Color(y, y, 0) + beta*material->color;
+            for(unsigned int i = 0; i < lights.size(); i++)
+            { 
+                // Light direction vector (from the hit point to the light)
+                Vector L = (lights[i]->position - hit).normalized();
+
+                // Computing per-light components of Gooch model
+                if(!enableShadows || !checkShadow(obj, hit, min_hit, L))
+                {
+                    // Using the Gooch shading formula
+                    diffuse += kCool *(1 - L.dot(N))/2 + kWarm * (1 + L.dot(N))/2;
+
+                    // Specular per-light component: R.V^n
+                    // Maximized when the viewer direction (V) is aligned with
+                    // the light reflected on the surface (R).
+                    // R is computed using the formula R = 2 * L.N * N - L.
+                    // Reusing old angle variable calculated above as L.N.
+                    double angle = (2 * L.dot(N) * N - L).normalized().dot(V);
+                    if(angle > 0)
+                        specular += pow(angle, material->n) * lights[i]->color;
+                }
+
+                // Reflections
+                Vector n = N.normalized();
+                Vector refl = ray.D -  2 * (ray.D.dot(n)) * n;
+
+                Ray reflRay = Ray(hit, refl, obj);
+                reflection = trace(reflRay, recursionDepth+1);
+            }
+
+            return diffuse * material->kd
+                + (specular + reflection) * material->ks;
+        }
         default: // Phong rendering
         {
             // Computing of the color using the Phong reflection model:
@@ -80,23 +117,7 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
                 // Light direction vector (from the hit point to the light)
                 Vector L = (lights[i]->position - hit).normalized();
 
-                // Check if another object does not cover the light ray
-                bool computeLights = true;
-                for (unsigned int i = 0; i < objects.size(); i++)
-                {
-                    if(objects[i] != obj)
-                    {
-                        Hit cover(objects[i]->intersect(Ray(hit, L)));
-                        if (cover.t != std::numeric_limits<double>::infinity()
-                            && cover.t < min_hit.t)
-                        {
-                            computeLights = false;
-                            break;
-                        }
-                    }
-                }
-
-                if(computeLights)
+                if(!enableShadows || !checkShadow(obj, hit, min_hit, L))
                 {
                     // Diffuse per-light component: L.N
                     // Maximized when the light direction (L) is aligned with
@@ -171,6 +192,22 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
             + (specular + reflection) * material->ks;
         }
     }
+}
+
+// Checks if an object is blocking the light to obj.
+bool Scene::checkShadow(const Object* obj, const Point& hit, const Hit& min_hit, const Vector& L)
+{
+    for (unsigned int i = 0; i < objects.size(); i++)
+    {
+        if(objects[i] != obj)
+        {
+            Hit cover(objects[i]->intersect(Ray(hit, L)));
+            if (cover.t != std::numeric_limits<double>::infinity()
+                && cover.t < min_hit.t)
+                return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -248,7 +285,7 @@ void Scene::setEye(Triple e)
 std::vector<Object*> Scene::getObjectsContaining(Point p, Object* excepted = NULL)
 {
 	std::vector<Object*> result = std::vector<Object*>();
-	for (int i = 0 ; i< objects.size() ; i++)
+	for (unsigned int i = 0 ; i< objects.size() ; i++)
 	{
 		if (objects[i]->hasWithin(p))
 		{
