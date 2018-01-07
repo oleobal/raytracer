@@ -70,7 +70,7 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
         case gooch: // Gooch illumination model
         {
             Color diffuse, specular, reflection;
-            Color materialColor = obj->colorAt(min_hit);
+            Color materialColor = obj->colorAt(hit);
             Color kCool = Color(0, 0, b) + alpha*materialColor;
             Color kWarm = Color(y, y, 0) + beta*materialColor;
             for(unsigned int i = 0; i < lights.size(); i++)
@@ -189,7 +189,7 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
             // The ambient component is added, and both the ambient and diffuse
             // components are affected by the material color.
             return
-            material->opacity * ((material->ka + diffuse * material->kd) * obj->colorAt(min_hit))
+            material->opacity * ((material->ka + diffuse * material->kd) * obj->colorAt(hit))
             + (1-material->opacity) * refraction
             + (specular + reflection) * material->ks;
         }

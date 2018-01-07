@@ -27,19 +27,26 @@
 class Sphere : public Object
 {
 public:
-	Sphere (Point position,double r, Vector up, double spin) : position(position), r(r), thisWayUp(up), spin(spin) { }
-    Sphere(Point position,double r) : position(position), r(r), thisWayUp(Vector(0,0,1)), spin(0.0) { }
+	Sphere (Point position, double r, Vector up, double spin) : position(position), r(r)
+    {
+        rotate(up, spin);
+    }
+    Sphere(Point position,double r) : position(position), r(r), phi(0), theta(0) { }
 
     virtual Hit intersect(const Ray &ray);
     virtual bool hasWithin(Point p);
     
-    virtual Color colorAt(Hit h);
+    virtual Color colorAt(const Point& hit);
+
+    // Rotate the sphere
+    void rotate(const Vector& up, double spin);
 
     const Point position;
     const double r;
-    
-    const Vector thisWayUp;
-    const double spin; // with thisWayUp as axis
+
+    // Sphere rotations
+    double phi;
+    double theta;
 };
 
 #endif /* end of include guard: SPHERE_H_115209AE */

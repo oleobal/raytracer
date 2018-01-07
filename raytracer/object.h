@@ -37,7 +37,7 @@ public:
     
     virtual bool hasWithin(Point p) = 0;
     
-    virtual Color colorAt(Hit h) { return material->color;};
+    virtual Color colorAt(const Point& hit) { return material->color;};
 };
 
 #endif /* end of include guard: OBJECT_H_AXKLE0OF */
