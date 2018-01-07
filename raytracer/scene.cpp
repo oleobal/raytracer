@@ -70,8 +70,9 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
         case gooch: // Gooch illumination model
         {
             Color diffuse, specular, reflection;
-            Color kCool = Color(0, 0, b) + alpha*material->color;
-            Color kWarm = Color(y, y, 0) + beta*material->color;
+            Color materialColor = obj->colorAt(min_hit);
+            Color kCool = Color(0, 0, b) + alpha*materialColor;
+            Color kWarm = Color(y, y, 0) + beta*materialColor;
             for(unsigned int i = 0; i < lights.size(); i++)
             { 
                 // Light direction vector (from the hit point to the light)
