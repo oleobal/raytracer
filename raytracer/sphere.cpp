@@ -82,6 +82,56 @@ Hit Sphere::intersect(const Ray &ray)
     return Hit(t,N);
 }
 
+
+Color Sphere::colorAt(Hit h)
+{
+	if (material->texture == NULL)
+		return material->color;
+	
+	// difference between up vector and N gives us y
+	
+	// That's always in [-1;1], right ? being cosine
+	double y = h.N.normalized().dot(thisWayUp.normalized());
+	y-=1; y*=-0.5; // minuses because else it's upside down
+	
+	
+	// compute a new vector that is perpendicular to the up vector
+	
+	// https://stackoverflow.com/a/43454629/8839641
+	// I mean, come on, vector arithmetic is boring
+	bool b0 = (thisWayUp.x <  thisWayUp.y) && (thisWayUp.x <  thisWayUp.z);
+	bool b1 = (thisWayUp.y <= thisWayUp.x) && (thisWayUp.y <  thisWayUp.z);
+	bool b2 = (thisWayUp.z <= thisWayUp.x) && (thisWayUp.z <= thisWayUp.y);
+	Vector side = thisWayUp.cross(Vector(int(b0), int(b1), int(b2)));
+	
+	double rot = spin * 3.14159265 / 180;
+	// now touch up the side vector according to the spin
+	side.rotate(thisWayUp, -rot);
+	
+	
+	// get the side vector aligned (y-wise) with the normal
+	// else measuring the angle doesn't make much sense
+	
+	// we'll need (yet another) vector for rotating,
+	// perpendicular to both up and side
+	Vector perp = thisWayUp.cross(side);
+	
+	// we already know the angle, it's more or less y
+	double diff = std::abs((y-0.5) * 3.14159265);
+	// rotate with respect to perp
+	
+	Vector rSide = Vector(side.x, side.y, side.z);
+	rSide.rotate(perp, diff);
+	
+	// use that new vector to do the same thing as before
+	
+	double x = h.N.normalized().dot(rSide.normalized());
+	x+=1; x*=0.5;
+	
+	
+	return material->texture->colorAt(x,y);
+}
+
 bool Sphere::hasWithin(Point p)
 {
 	Vector v = p-position;

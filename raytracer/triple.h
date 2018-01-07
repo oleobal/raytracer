@@ -172,6 +172,25 @@ public:
         y *= invl;
         z *= invl;
     }	
+    
+    /** counter clockwise */
+    void rotate(Triple axis, double angleRadians)
+    {
+		double u = axis.x, v = axis.y, w = axis.z;
+		double newX = u*(u*x + v*y + w*z)*(1.0 - std::cos(angleRadians)) 
+                + x*std::cos(angleRadians)
+                + (-w*y + v*z)*std::sin(angleRadians);
+                
+        double newY = v*(u*x + v*y + w*z)*(1.0 - std::cos(angleRadians))
+                + y*std::cos(angleRadians)
+                + (w*x - u*z)*std::sin(angleRadians);
+                
+        double newZ = w*(u*x + v*y + w*z)*(1.0 - std::cos(angleRadians))
+                + z*std::cos(angleRadians)
+                + (-v*x + u*y)*std::sin(angleRadians);    
+                
+        x = newX ; y = newY ; z = newZ;     
+	}
 
     friend istream& operator>>(istream &s, Triple &v);
     friend ostream& operator<<(ostream &s, const Triple &v);
@@ -219,6 +238,8 @@ public:
             double b;
         };
     };
+    
+    
 };
 
 typedef Triple Color;

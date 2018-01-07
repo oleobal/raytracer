@@ -25,7 +25,7 @@
 #include "triple.h"
 #include "light.h"
 
-class Material;
+#include "material.h"
 
 class Object {
 public:
@@ -36,6 +36,8 @@ public:
     virtual Hit intersect(const Ray &ray) = 0;
     
     virtual bool hasWithin(Point p) = 0;
+    
+    virtual Color colorAt(Hit h) { return material->color;};
 };
 
 #endif /* end of include guard: OBJECT_H_AXKLE0OF */
