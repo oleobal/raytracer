@@ -91,6 +91,9 @@ Color Sphere::colorAt(const Point& hit)
     double x = fmod(atan2(hit.y - position.y, hit.x - position.x) + phi, 2*M_PI);
     double y = fmod(acos((hit.z - position.z)/r) + theta, 2*M_PI);
 
+    if(y > M_PI)
+        y = 2*M_PI - y;
+
     return material->texture->colorAt(x/(2*M_PI), y/M_PI);
 }
 
