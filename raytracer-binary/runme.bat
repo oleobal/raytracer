@@ -1,10 +1,3 @@
-raytracer.exe camera-big.yaml
-raytracer.exe camera-blue-planet.yaml
-raytracer.exe camera-focus-red.yaml
-raytracer.exe camera-forward.yaml
-raytracer.exe camera-move.yaml
-raytracer.exe camera-old.yaml
-raytracer.exe camera-roll.yaml
-raytracer.exe camera-unzoom.yaml
-raytracer.exe 1-sample-per-px.yaml
-raytracer.exe 9-samples-per-px.yaml
+raytracer.exe scene01-earth.png
+raytracer.exe scene01-gooch-full.png
+raytracer.exe scene01-gooch.png

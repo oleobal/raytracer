@@ -58,8 +58,8 @@ Objects:
 - type: sphere
   position: [140,220,400]
   radius: 50
-  up: [0.0,1.0,0.0]
-  spin: 50
+  up: [0.0,1.0,0.7]
+  spin: 90
   material:
     color: [0.5,0.5,1.0]
     texture: "../raytracer-binary/earth.png"
