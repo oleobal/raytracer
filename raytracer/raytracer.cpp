@@ -26,6 +26,7 @@
 #include "light.h"
 #include "image.h"
 #include "yaml/yaml.h"
+#include "glm.h"
 #include <ctype.h>
 #include <fstream>
 #include <assert.h>
@@ -78,11 +79,11 @@ Material* Raytracer::parseMaterial(const YAML::Node& node)
     return m;
 }
 
-Object* Raytracer::parseObject(const YAML::Node& node)
+vector<Object*> Raytracer::parseObject(const YAML::Node& node)
 {
-    Object *returnObject = NULL;
     std::string objectType;
     node["type"] >> objectType;
+    vector<Object*> objs;
 
     if (objectType == "sphere")
     {
@@ -103,8 +104,9 @@ Object* Raytracer::parseObject(const YAML::Node& node)
 		catch (...)
 		{ spin=0.0; }
 		
-		Sphere *sphere = new Sphere(pos,r,up,spin);		
-        returnObject = sphere;
+		Sphere *sphere = new Sphere(pos,r,up,spin);
+        sphere->material = parseMaterial(node["material"]);
+        objs.push_back(sphere);
     }
     else if(objectType == "triangle")
     {
@@ -113,7 +115,8 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["point2"] >> p1;
         node["point3"] >> p2;
         Triangle* triangle = new Triangle(p0, p1, p2);
-        returnObject = triangle;
+        triangle->material = parseMaterial(node["material"]);
+        objs.push_back(triangle);
     }
     else if(objectType == "cylinder")
     {
@@ -123,16 +126,105 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         double r;
         node["radius"] >> r;
         Cylinder* cylinder = new Cylinder(p0, p1, r);
-        returnObject = cylinder;
+        cylinder->material = parseMaterial(node["material"]);
+        objs.push_back(cylinder);
     }
-
-    if (returnObject)
+    else if(objectType == "model")
     {
-        // read the material and attach to object
-        returnObject->material = parseMaterial(node["material"]);
+        // Reading model parameters
+        GLMmodel* model; 
+        Point p;
+        double size;
+        string fileName;
+        node["file"] >> fileName;
+        model = glmReadOBJ(&fileName[0u]);
+
+        // Sets the position to (0, 0, 0) and scale it to fit into a 1x1x1 cube
+        //double factor = (double) glmUnitize(model);
+        try // Set a position other than (0, 0, 0) if wanted
+        {
+            node["position"] >> p;
+            model->position[0] = p.x;
+            model->position[1] = p.y;
+            model->position[2] = p.z;
+        }
+        catch(YAML::TypedKeyNotFound<std::string>) {}
+        try // Scale it to the wanted size
+        {
+            node["size"] >> size;
+            glmScale(model, size);
+        }
+        catch(YAML::TypedKeyNotFound<std::string>) // Give back its original size
+        {
+        //    glmScale(model, (float)(1.0 / factor));
+        }
+
+        Material* material = nullptr;
+        bool uniformMaterial;
+        try // Same material for all triangles
+        {
+            material = parseMaterial(node["material"]);
+            uniformMaterial = true;
+        }
+        catch(YAML::TypedKeyNotFound<std::string>)
+        {
+            uniformMaterial = false;
+        }
+
+        // Converting model into triangles
+        GLMgroup* group = model->groups;
+        while(group != nullptr)
+        {
+            if(!uniformMaterial) // Material is specific to group
+            {
+                material = new Material();
+                material->color.r = (double) model->materials[group->material].emmissive[0];
+                material->color.g = (double) model->materials[group->material].emmissive[1];
+                material->color.b = (double) model->materials[group->material].emmissive[2];
+                // Since we have implemented ka, kd and ks as intensities and not RGB components,
+                // we average the intensities from the specified RGB components.
+                material->ka = (double) (
+                    model->materials[group->material].ambient[0]
+                    + model->materials[group->material].ambient[1]
+                    + model->materials[group->material].ambient[2] ) / 3.0;
+                material->kd = (double) (
+                    model->materials[group->material].diffuse[0]
+                    + model->materials[group->material].diffuse[1]
+                    + model->materials[group->material].diffuse[2] ) / 3.0;
+                material->ks = (double) (
+                    model->materials[group->material].specular[0]
+                    + model->materials[group->material].specular[1]
+                    + model->materials[group->material].specular[2] ) / 3.0;
+                material->n = (double) model->materials[group->material].shininess;
+            }
+
+            for(unsigned int i = 0; i < group->numtriangles; i++)
+            {
+                GLMtriangle* triangle = &model->triangles[group->triangles[i]];
+                Triangle* newTriangle = new Triangle(Point(
+                    (double) model->vertices[triangle->vindices[0]*3+0] + model->position[0],
+                    (double) model->vertices[triangle->vindices[0]*3+1] + model->position[1],
+                    (double) model->vertices[triangle->vindices[0]*3+2] + model->position[2]
+                    ),  Point(
+                    (double) model->vertices[triangle->vindices[1]*3+0] + model->position[0],
+                    (double) model->vertices[triangle->vindices[1]*3+1] + model->position[1],
+                    (double) model->vertices[triangle->vindices[1]*3+2] + model->position[2]
+                    ), Point(
+                    (double) model->vertices[triangle->vindices[2]*3+0] + model->position[0],
+                    (double) model->vertices[triangle->vindices[2]*3+1] + model->position[1],   
+                    (double) model->vertices[triangle->vindices[2]*3+2] + model->position[2]
+                    ));
+                newTriangle->material = material;
+                objs.push_back(newTriangle);
+            }
+            group = group->next;
+        }
+
+        // Deleting model
+        glmDelete(model);
     }
 
-    return returnObject;
+    return objs;
 }
 
 Light* Raytracer::parseLight(const YAML::Node& node)
@@ -249,10 +341,10 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 return false;
             }
             for(YAML::Iterator it=sceneObjects.begin();it!=sceneObjects.end();++it) {
-                Object *obj = parseObject(*it);
+                vector<Object*> objs = parseObject(*it);
                 // Only add object if it is recognized
-                if (obj) {
-                    scene->addObject(obj);
+                if (objs.size() > 0) {
+                    scene->addObject(objs);
                 } else {
                     cerr << "Warning: found object of unknown type, ignored." << endl;
                 }

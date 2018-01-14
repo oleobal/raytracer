@@ -59,7 +59,7 @@ public:
     Color trace(const Ray &ray, int recursionDepth=0);
     bool checkShadow(const Object* obj, const Point& hit, const Hit& min_hit, const Vector& L);
     void render(Image &img);
-    void addObject(Object *o);
+    void addObject(vector<Object*> o);
     void addLight(Light *l);
     void setEye(Triple e);
     std::vector<Object*> getObjectsContaining(Point p, Object* excepted);

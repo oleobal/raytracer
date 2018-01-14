@@ -263,9 +263,9 @@ void Scene::render(Image &img)
     }
 }
 
-void Scene::addObject(Object *o)
+void Scene::addObject(vector<Object*> o)
 {
-    objects.push_back(o);
+    objects.insert(objects.end(), o.begin(), o.end());
 }
 
 void Scene::addLight(Light *l)
