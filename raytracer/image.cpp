@@ -91,3 +91,50 @@ void Image::read_png(const char* filename)
         currentPixel++;
     }	
 }
+
+/**
+ * additive
+ */
+void Image::addCircle(int ox, int oy, Color c, int radius, bool clamp)
+{
+	if (radius < 1)
+		radius = 1;
+		
+    for(int y=-radius; y<=radius; y++)
+		for(int x=-radius; x<=radius; x++)
+			if(x*x+y*y <= radius*radius)
+			{
+				if (ox+x>=0 && oy+y>=0 && ox+x < (*this).width() && oy+y < (*this).height())
+				{
+					Color d = (*this)(ox+x, oy+y);
+					d += c;
+					if (clamp)
+						d.clamp();
+
+					(*this)(ox+x, oy+y) = d;
+				}
+			}
+}
+
+void Image::fill(Color c)
+{
+	for (int x = 0 ; x < _width ; x++)
+		for (int y = 0 ; y < _height ; y++)
+			(*this)(x, y) = c;
+}
+
+void Image::overlay(Image img, double multiplier, bool clamp)
+{
+	if (height() != img.height() || width() != img.width())
+		throw new string("Not the same dimensions !");
+	
+	
+	for (int y = 0 ; y < _height ; y++)
+		for (int x = 0 ; x < _width ; x++)
+		{
+			(*this)(x,y)+=(multiplier*img.get_pixel(x,y));
+			if (clamp)
+				(*this)(x,y).clamp();
+		}
+	
+}

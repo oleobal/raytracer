@@ -173,23 +173,15 @@ public:
         z *= invl;
     }	
     
-    /** counter clockwise */
+    // Rodrigues formula
     void rotate(Triple axis, double angleRadians)
     {
-		double u = axis.x, v = axis.y, w = axis.z;
-		double newX = u*(u*x + v*y + w*z)*(1.0 - std::cos(angleRadians)) 
-                + x*std::cos(angleRadians)
-                + (-w*y + v*z)*std::sin(angleRadians);
-                
-        double newY = v*(u*x + v*y + w*z)*(1.0 - std::cos(angleRadians))
-                + y*std::cos(angleRadians)
-                + (w*x - u*z)*std::sin(angleRadians);
-                
-        double newZ = w*(u*x + v*y + w*z)*(1.0 - std::cos(angleRadians))
-                + z*std::cos(angleRadians)
-                + (-v*x + u*y)*std::sin(angleRadians);    
-                
-        x = newX ; y = newY ; z = newZ;     
+		Triple v = Triple(x, y, z);
+		axis.normalize();
+		v = v * std::cos(angleRadians) + (axis.cross(v))*std::sin(angleRadians)
+		       + axis * (axis.dot(v)) * (1.0 - std::cos(angleRadians)) ;
+		
+		x = v.x; y = v.y ; z = v.z;
 	}
 
     friend istream& operator>>(istream &s, Triple &v);

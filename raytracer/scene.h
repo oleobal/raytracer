@@ -46,6 +46,10 @@ private:
     double nearClippingDistance;
     double farClippingDistance;
     bool enableShadows;
+    bool enableDepthOfField;
+    double apertureDiameter; // diameter of the entrance pupil
+    double focalLength;
+    double focusDistance;
     int maxRecursionDepth;
     Triple lookAt;
     Triple upVector;
@@ -59,7 +63,10 @@ private:
     float beta;
 
 public:
-    Color trace(const Ray &ray, int recursionDepth=0);
+	/**
+	 * *depth_p, if given, is filled with the depth at given pixel
+	 */
+    Color trace(const Ray &ray, int recursionDepth=0, double* depth_p=0);
     bool checkShadow(const Object* obj, const Point& hit, const Hit& min_hit, const Vector& L);
     void render(Image &img);
     void addObject(vector<Object*> o);
@@ -74,6 +81,10 @@ public:
     void setNearClippingDistance(double value) { nearClippingDistance = value; }
     void setFarClippingDistance(double value) { farClippingDistance = value; }
     void setEnableShadows(bool value) { enableShadows = value; }
+    void setEnableDepthOfField(bool value) { enableDepthOfField = value; }
+    void setApertureDiameter(double value) {apertureDiameter = value; }
+    void setFocalLength(double value) {focalLength = value; }
+    void setFocusDistance(double value) {focusDistance = value; }
     void setMaxRecursionDepth(int value) {maxRecursionDepth = value; }
     void setLookAt(Triple value) { lookAt = value; }
     void setUpVector(Triple value) { upVector = value; }
