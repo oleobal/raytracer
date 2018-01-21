@@ -4,6 +4,18 @@
 
 Week: 6
 
+OBJ and MTL files can now be loaded. We can also define a material for the
+whole object (color, diffuse, specular, etc).
+
+Generating a picture using "dolphins.yaml" may take more than one hour due
+to the complexity of the object mesh. This means that runme.bat may also
+take more than one hour before completion.
+
+For very long renders (such as dolphins.yaml), a progression indicator has been
+added ; its step (in percentage of completion) can be specified using the
+PrintProgression parameter.
+
+
 Depth of field:
 	We added Depth of Field support, but not through the method suggested.
 	Instead, we use the sprite scattering method : we overlay a circular
