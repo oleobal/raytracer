@@ -22,7 +22,7 @@
 #include "scene.h"
 #include "material.h"
 
-Color Scene::trace(const Ray &ray, int recursionDepth)
+Color Scene::trace(const Ray &ray, int recursionDepth, double* depth_p)
 {
 	if (recursionDepth > maxRecursionDepth)
 		return Color(0.0, 0.0, 0.0);
@@ -40,6 +40,14 @@ Color Scene::trace(const Ray &ray, int recursionDepth)
             }
         }
     }
+	
+	if (depth_p)
+	{
+		if (!obj)
+			*depth_p = -1;
+		else
+			*depth_p = min_hit.t;
+	}
 
     // No hit? Return background color.
     if (!obj) return Color(0.0, 0.0, 0.0);
@@ -237,7 +245,13 @@ void Scene::render(Image &img)
 
     // Center of the screen in 3D space
     Point center = (lookAt-eye).normalized() * focalDistance + eye;
-
+	
+	// plugging this in to get the true distance to camera
+	// in most cases we'd be using the z-buffer, but here there's no point
+	double depthHere ; std::vector<std::vector<double>> depth;
+	if (enableDepthOfField)
+		 depth = vector<vector<double>>(h, vector<double>(w));
+	
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
@@ -252,8 +266,13 @@ void Scene::render(Image &img)
                         + center;
 
                     Ray ray(eye, (pixel-eye).normalized());
-					Color colbuf = trace(ray);
+                    
+                    
+					Color colbuf = trace(ray, 0, &depthHere);
 					col += (colbuf);
+					
+					if (enableDepthOfField)
+						depth[y][x] = depthHere;
 				}
 			}
 			col = col / (superSamplingMult*superSamplingMult);
@@ -261,6 +280,40 @@ void Scene::render(Image &img)
             img(x,y) = col;
         }
     }
+    
+    
+    if (enableDepthOfField)
+    {
+		// sprite scattering method
+		Image* flares = new Image(img.width(), img.height());
+		flares->fill(Color(0,0,0));
+		for (int y = 0; y < h; y++)
+		{
+			for (int x = 0; x < w; x++)
+			{
+				if (depth[y][x] > 0)
+				{
+					// calculating blur disk diameter
+					// en.wikipedia.org/wiki/Depth_of_field#Foreground_and_background_blur_2
+					
+					// b = (f*m/N)*((D-s)/D)
+					double magnification = focalLength / (focusDistance - focalLength );
+					double fNumber = focalLength/apertureDiameter;
+					double blurDiskDiameter = (focalLength*magnification/fNumber) * ((depth[y][x] - focusDistance)/depth[y][x]) ;
+					
+					//blur is the sum of all these circles (which we draw over "flares")
+					// in theory the areas in focus will get circles equal or beneath one pixel
+					
+					//std::cout << x << " "<< y << " | " << blurDiskDiameter << " | " << (int)(blurDiskDiameter*1000) << std::endl ;
+					flares->addCircle(x, y, img.get_pixel(x,y), (int)(blurDiskDiameter*1000));
+					
+				}
+			}
+		}
+		
+		// add that to the image
+		img.overlay(*flares, 0.01, true);
+	}
 }
 
 void Scene::addObject(vector<Object*> o)

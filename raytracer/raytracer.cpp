@@ -333,6 +333,27 @@ bool Raytracer::readScene(const std::string& inputFilename)
             { scene->setsuperSamplingMult(doc["SuperSampling"]); }
             catch (YAML::TypedKeyNotFound<std::string>)
             { scene->setsuperSamplingMult(1); }
+            
+            try
+            { scene->setEnableDepthOfField(doc["DepthOfField"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setEnableDepthOfField(false); }
+            
+            try
+            { scene->setApertureDiameter(doc["ApertureDiameter"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setApertureDiameter(1.0); }
+            
+            try
+            { scene->setFocalLength(doc["FocalLength"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setFocalLength(0.5); }
+            
+            try
+            { scene->setFocusDistance(doc["FocusDistance"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setFocusDistance(50); }
+
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];
