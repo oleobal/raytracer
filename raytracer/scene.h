@@ -24,7 +24,6 @@
 
 #include <iomanip>
 #include <iostream>
-#include <omp.h>
 #include <math.h>
 #include <vector>
 #include "triple.h"

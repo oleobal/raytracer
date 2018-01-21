@@ -381,7 +381,6 @@ bool Raytracer::readScene(const std::string& inputFilename)
 void Raytracer::renderToFile(const std::string& outputFilename)
 {
     Image img(scene->getWidth(), scene->getHeight());
-    omp_set_num_threads(omp_get_max_threads());
     cout << "Tracing..." << endl;
     scene->render(img);
     cout << "Writing image to " << outputFilename << "..." << endl;
