@@ -138,3 +138,38 @@ void Image::overlay(Image img, double multiplier, bool clamp)
 		}
 	
 }
+
+
+double Image::toneMap(double x)
+{
+	if (x < 0.6)
+		return x;
+	else
+	{
+		double res= (0.6+0.45333-(0.45333*0.45333/(x-0.6+0.45333)));
+		std::cout << "res : "<<res <<std::endl;
+		if (res < 1)
+			return res;
+		else
+			return 1;
+	}
+}
+
+/**
+ * applies non-linear tone-mapping on HDR image
+ */
+void Image::smartClamp()
+{
+	for (int y = 0 ; y < _height ; y++)
+		for (int x = 0 ; x < _width ; x++)
+		{
+			std::cout << (*this)(x,y).r << " " << (*this)(x,y).g << " " <<(*this)(x,y).b << std::endl;
+			(*this)(x,y).r = toneMap((*this)(x,y).r);
+			(*this)(x,y).g = toneMap((*this)(x,y).g);
+			(*this)(x,y).b = toneMap((*this)(x,y).b);
+			std::cout << (*this)(x,y).r << " " << (*this)(x,y).g << " " <<(*this)(x,y).b << std::endl <<std::endl;
+			
+		}
+}
+
+

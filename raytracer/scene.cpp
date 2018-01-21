@@ -257,7 +257,7 @@ void Scene::render(Image &img)
 	if (enableDepthOfField)
 		 depth = vector<vector<double>>(h, vector<double>(w));
 	
-	#pragma omp parallel for
+	//#pragma omp parallel for
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
@@ -282,14 +282,14 @@ void Scene::render(Image &img)
 				}
 			}
 			col = col / (superSamplingMult*superSamplingMult);
-			col.clamp();
+			//col.clamp();
             img(x,y) = col;
 
             progression += 1;
             if(printProgression > 0.0f
                 && progression * progressionRatio >= nextPercent)
             {
-                #pragma omp critical
+                //#pragma omp critical
                 {
                     // Critical : block other threads from writing at the same time.
                     // We cannot tell only the first thread to print as it can finish its job before all other threads
@@ -332,8 +332,10 @@ void Scene::render(Image &img)
 		}
 		
 		// add that to the image
-		img.overlay(*flares, 0.01, true);
+		img.overlay(*flares, 0.01, false);
 	}
+	
+	img.smartClamp();
 }
 
 void Scene::addObject(vector<Object*> o)

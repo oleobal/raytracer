@@ -80,6 +80,8 @@ public:
     void addCircle(int x, int y, Color c, int radius, bool clamp=false);
     void fill(Color c);
     void overlay(Image img, double multiplier=1, bool clamp=false);
+    void smartClamp();
+    double toneMap(double);
 
 protected:
 
