@@ -22,6 +22,7 @@
 #include "sphere.h"
 #include "triangle.h"
 #include "cylinder.h"
+#include "plane.h"
 #include "material.h"
 #include "light.h"
 #include "image.h"
@@ -118,6 +119,18 @@ vector<Object*> Raytracer::parseObject(const YAML::Node& node)
         triangle->material = parseMaterial(node["material"]);
         objs.push_back(triangle);
     }
+    
+    else if(objectType == "plane")
+    {
+        Point p;
+        node["position"] >> p;
+        Vector N;
+        node["normal"] >> N;
+        Plane* plane = new Plane(p, N);
+        plane->material = parseMaterial(node["material"]);
+        objs.push_back(plane);
+    }
+    
     else if(objectType == "cylinder")
     {
         Point p0, p1;
