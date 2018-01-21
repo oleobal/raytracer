@@ -21,6 +21,7 @@
 #define RAYTRACER_H_6GQO67WK
 
 #include <iostream>
+#include <omp.h>
 #include <string>
 #include "triple.h"
 #include "light.h"

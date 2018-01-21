@@ -301,6 +301,12 @@ bool Raytracer::readScene(const std::string& inputFilename)
             catch (YAML::TypedKeyNotFound<std::string>)
             { scene->setMaxRecursionDepth(0); }
 
+            // Read the optional progression printing parameter
+            try
+            { scene->setPrintProgression(doc["PrintProgression"]); }
+            catch (YAML::TypedKeyNotFound<std::string>)
+            { scene->setPrintProgression(0.0f); }
+
             // Read camera configuration
             try
             { 
@@ -375,6 +381,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
 void Raytracer::renderToFile(const std::string& outputFilename)
 {
     Image img(scene->getWidth(), scene->getHeight());
+    omp_set_num_threads(omp_get_max_threads());
     cout << "Tracing..." << endl;
     scene->render(img);
     cout << "Writing image to " << outputFilename << "..." << endl;

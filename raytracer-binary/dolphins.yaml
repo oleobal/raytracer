@@ -13,13 +13,15 @@
 #  it should be clear that the #-character can be used to insert comments.
 
 Camera:
-  position: [0,0,1000]
+  position: [0,0,2000]
   lookat: [0, 0, 0]
   up: [0, 22.6, 0]
-  resolution: [400, 400]
+  resolution: [1920, 1080]
 
 Shadows: true
 MaxRecursionDepth: 10
+SuperSampling: 2
+PrintProgression: 0.1
 
 Lights:
 - position: [400,400,1500]
@@ -56,7 +58,7 @@ Objects:
     ks: 0
     n: 1
 - type: sphere # moon
-  position: [400,400,-1500]
+  position: [600,300,-1500]
   radius: 100
   material:
     color: [0.75,0.75,0.8]

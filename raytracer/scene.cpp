@@ -238,6 +238,11 @@ void Scene::render(Image &img)
     // Center of the screen in 3D space
     Point center = (lookAt-eye).normalized() * focalDistance + eye;
 
+    int progression = 0;
+    float progressionRatio = 100.0f / (float)(w*h);
+    float nextPercent = printProgression;
+    
+	#pragma omp parallel for
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
@@ -259,6 +264,20 @@ void Scene::render(Image &img)
 			col = col / (superSamplingMult*superSamplingMult);
 			col.clamp();
             img(x,y) = col;
+
+            progression += 1;
+            if(printProgression > 0.0f
+                && progression * progressionRatio >= nextPercent)
+            {
+                #pragma omp critical
+                {
+                    // Critical : block other threads from writing at the same time.
+                    // We cannot tell only the first thread to print as it can finish its job before all other threads
+                    // and stop printing at something like 80% progression.
+                    std::cout << "Rendering: " << std::fixed << std::setprecision(1) << nextPercent << "%" << std::endl;
+                    nextPercent += printProgression;
+                }
+            }
         }
     }
 }

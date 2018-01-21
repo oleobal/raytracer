@@ -22,6 +22,9 @@
 #ifndef SCENE_H_KNBLQLP6
 #define SCENE_H_KNBLQLP6
 
+#include <iomanip>
+#include <iostream>
+#include <omp.h>
 #include <math.h>
 #include <vector>
 #include "triple.h"
@@ -50,6 +53,7 @@ private:
     int width;
     int height;
     int superSamplingMult;
+    float printProgression;
     float b;
     float y;
     float alpha;
@@ -78,7 +82,8 @@ public:
     void setHeight(int value) { height = value; }
     int getWidth() { return width; }
     int getHeight() { return height; }
-    void setsuperSamplingMult(int value) {superSamplingMult = value; }
+    void setsuperSamplingMult(int value) { superSamplingMult = value; }
+    void setPrintProgression(float value) { printProgression = value; }
     void setB(float value) { b = value; }
     void setY(float value) { y = value; }
     void setAlpha(float value) { alpha = value; }
